@@ -1,0 +1,10 @@
+backup.sh
+Full.pdf
+*.pdf
+*.bbl
+*.blg
+*.aux
+*.log
+*.dvi
+*.tex.bak
+.~lock.*
