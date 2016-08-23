@@ -15,32 +15,19 @@
 
 \definecolor{myGray}{gray}{0.8}
 
-%\newcommand\rankeq{\stackrel{\mathclap{\normalfont\mbox{rank}}}{=}}
 \newcommand\rankeq{\mathrel{\overset{\makebox[0pt]{\mbox{\normalfont\tiny\sffamily rank}}}{=}}}
 
 \setlist[itemize]{noitemsep}  % remove space between list items
 
 \begin{document}
 
-\author{[Blind]}
-%\author{
-%Garrick Sherman and Miles Efron \\
-%     \affaddr{Graduate School of Library and Information Science}\\
-%       \affaddr{University of Illinois at Urbana-Champaign}\\
-%       \email{\{gsherma2, mefron\}@illinois.edu}
-%}
+\author{Garrick Sherman}
 
 \title{Document Expansion with External Collections for Information Retrieval}
 
 \maketitle
 \begin{abstract}
 \end{abstract}
-
-% A category with the (minimum) three required fields
-%\category{H.3.3}{Information Search and Retrieval}{}
-
-%\terms{}
-%\keywords{Entity linking}
 
 \section{Introduction}\label{section.intro}
 
@@ -198,7 +185,7 @@ To set the two $\lambda_{\mathcal{E}_D}$ values, we use 5-fold cross validation.
 \begin{table}[htbp]
 \centering
 \begin{tabular}{|c|l|c|c|} \hline
-& {\bf Run} & {\bf $\lambda$} & {\bf MAP} \\ \hline\hline
+{\bf Collection} & {\bf Run} & {\bf $\lambda$} & {\bf MAP} \\ \hline\hline
 \rule{0pt}{2.5ex} \multirow{3}{*}{AP} & {\it baseline-ql} & -- & 0.2346 \\ \cline{2-4}
 \rule{0pt}{2.5ex} & {\it baseline-rm} & 0.2 & 0.2273 \\ \cline{2-4}
 \rule{0pt}{2.5ex} & {\it exp-ql} & -- & 0.2707 \\ \hline\hline
@@ -219,18 +206,26 @@ To set the two $\lambda_{\mathcal{E}_D}$ values, we use 5-fold cross validation.
 \label{table.performance}
 \end{table}
 
-%\begin{figure}[!htb]
-%\centering
-%\includegraphics[width=.85\columnwidth]{figures/sweep-stanbol.pdf}
-%\caption{Sweeps over values of $\lambda$ for AP and robust \textit{stanbol} runs.}
-%\label{figure.sweeps-stanbol}
-%\end{figure}
-
 Retrieval performance of the baselines and top-scoring runs are shown in Table \ref{table.performance}. Mean average precision (MAP) scores marked with $\uparrow$ are greater than the baseline run with statistical significance at $p < 0.05$ using a paired one-tailed t-test. Note that baselines correspond to $\sum_{j=1}^n \lambda_{{\mathcal{E}_D}_j} = 0.0$. 
 
 \textbf{Relating to old work, probably suggestive of this work, though:} As Figure \ref{figure.sweeps-ql} shows, performance of \textit{kb} runs is not very sensitive to $n$, the number of linked entities: AP shows improvement over the baseline at $0.1 \leq \lambda \leq 0.9$ and robust at $0.1 \leq \lambda \leq 0.7$ for all values of $n$. Optimal performance for both collections occurs at relatively small numbers of entities as shown in Table \ref{table.performance}; this is a convenient result since it allows for more efficient document expansion.
 
-%Figure \ref{figure.sweeps-stanbol} does not present sweeps over $n$ because variations in performance at different values are negligible for \textit{stanbol} runs. This is due to the low number of entities linked by Stanbol: an average of only 5.96 and 4.70 per document for AP and robust respectively. Notably, our model does not perform well with Stanbol annotations, as seen in Figure \ref{figure.sweeps-stanbol}. Both collections show very slight improvement at $\lambda = 0.1$, but this is not statistically significant and performance declines relative to the baseline at all other values of $\lambda$. We attribute this shortcoming to the overfitting of the Stanbol annotations to specific entity mentions in the text, rather than to concepts relevant to the document. 
+\subsection{Is Expansion Worthwhile?}\label{section.results.expansion}
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{|l|c|c|c|c|} \hline
+& \multicolumn{2}{c}{Self} & \multicolumn{2}{|c|}{Wikipedia} \\ \hline
+{\bf Collection} & {\bf $\lambda$} & {\bf MAP} & {\bf $\lambda$} & {\bf MAP} \\ \hline
+AP & ? & ? & 0.2 & 0.2662 \\ \hline
+Robust & ? & ? & 0.2 & 0.2354 \\ \hline
+wt10g & ? & ? & ? & ? \\ \hline
+blogs06 & ? & ? & ? & ? \\ \hline
+clueweb09 & ? & ? & ? & ? \\ \hline
+\end{tabular}
+\caption{The top-scoring runs by MAP using only one collection of expansion documents. ``Self'' indicates expansion using the document's original collection while ``Wikipedia'' indicates expansion using Wikipedia.}
+\label{table.performance.single}
+\end{table}
 
 \section{Conclusions}\label{section.conclusions}
 
