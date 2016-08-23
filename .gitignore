@@ -1,6 +1,5 @@
 backup.sh
-Full.pdf
-*.pdf
+/*.pdf
 *.bbl
 *.blg
 *.aux
