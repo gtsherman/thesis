@@ -36,7 +36,7 @@
 
 \subsection{Document Expansion in IR}\label{section.related.ir}
 
-\textbf{Skip}
+Prior work
 
 Our idea is related to Wei and Croft's LDA-based document model, which smooths the document language model with latent Dirichlet allocation probabilities \cite{Wei2006}. Liu and Croft's \textit{CBDM} model performs a similar type of document expansion by interpolating the probability of a query term in a document cluster with its probability in the document \cite{Liu2004}.
 
@@ -179,35 +179,42 @@ For this work, we set $k$ heuristically. In principle, this parameter need not b
 
 \textbf{I have also set $n$ heuristically but intend to do a sweep over values of $n$ to ensure it is not a sensitive parameter. Prior work suggests it is not.}
 
-To set the two $\lambda_{\mathcal{E}_D}$ values, we use 5-fold cross validation. This entails splitting each set of topics into five random groups (folds) and using four of them in concert with relevance judgments to determine optimal parameter settings, which we test using the fifth. By using each of the five folds as the test fold once, we produce results that fully cover the topic set; we combine these results in order to perform batch evaluation. Additionally, since the quality of the results depends in part on the initial random fold creation, we run the cross-validation repeatedly 75 times and report the average metric across these repeated runs. This helps ensure that strong performance is not the result of a beneficial but random division of documents.
+%To set the two $\lambda_{\mathcal{E}_D}$ values, we use 5-fold cross validation. This entails splitting each set of topics into five random groups (folds) and using four of them in concert with relevance judgments to determine optimal parameter settings, which we test using the fifth. By using each of the five folds as the test fold once, we produce results that fully cover the topic set; we combine these results in order to perform batch evaluation. Additionally, since the quality of the results depends in part on the initial random fold creation, we run the cross-validation repeatedly 75 times and report the average metric across these repeated runs. This helps ensure that strong performance is not the result of a beneficial but random division of documents.
+
+To set the two $\lambda_{\mathcal{E}_D}$ values, we use 5-fold cross validation. This entails splitting each set of topics into five random groups (folds) and using four of them in concert with relevance judgments to determine optimal parameter settings, which we test using the fifth. By using each of the five folds as the test fold once, we produce results that fully cover the topic set; we combine these results in order to perform batch evaluation. 
 
 \section{Results}\label{section.results}
 
 \begin{table}[htbp]
 \centering
 \begin{tabular}{|c|l|c|c|} \hline
-{\bf Collection} & {\bf Run} & {\bf $\lambda$} & {\bf MAP} \\ \hline\hline
-\rule{0pt}{2.5ex} \multirow{3}{*}{AP} & {\it baseline-ql} & -- & 0.2346 \\ \cline{2-4}
-\rule{0pt}{2.5ex} & {\it baseline-rm} & 0.2 & 0.2273 \\ \cline{2-4}
-\rule{0pt}{2.5ex} & {\it exp-ql} & -- & 0.2707 \\ \hline\hline
-\rule{0pt}{2.5ex} \multirow{3}{*}{Robust} & {\it baseline-ql} & -- & 0.2183 \\ \cline{2-4}
-\rule{0pt}{2.5ex} & {\it baseline-rm} & 0.2 & 0.2349 \\ \cline{2-4}
-\rule{0pt}{2.5ex} & {\it exp-ql} & -- & 0.2406 \\ \hline\hline
-\rule{0pt}{2.5ex} \multirow{3}{*}{wt10g} & {\it baseline-ql} & -- & 0.1687 \\ \cline{2-4}
-\rule{0pt}{2.5ex} & {\it baseline-rm} & 0.7, 0.8 & 0.1735 \\ \cline{2-4}
-\rule{0pt}{2.5ex} & {\it exp-ql} & -- & 0.1820 \\ \hline\hline
-\rule{0pt}{2.5ex} \multirow{3}{*}{blogs06} & {\it baseline-ql} & -- & 0.3064 \\ \cline{2-4}
-\rule{0pt}{2.5ex} & {\it baseline-rm} & 0.7 & 0.3103 \\ \cline{2-4}
-\rule{0pt}{2.5ex} & {\it exp-ql} & -- & 0.2974 \\ \hline\hline
-\rule{0pt}{2.5ex} \multirow{3}{*}{clueweb09} & {\it baseline-ql} & -- & 0.1117 \\ \cline{2-4}
-\rule{0pt}{2.5ex} & {\it baseline-rm} & 0.2 & 0.1163 \\ \cline{2-4}
-\rule{0pt}{2.5ex} & {\it exp-ql} & -- & 0.1176 \\ \hline
+{\bf Collection} & {\bf Run} & {\bf MAP} & {\bf nDCG@20} \\ \hline\hline
+\rule{0pt}{2.5ex} \multirow{3}{*}{AP} & {\it baseline-ql} & 0.2337 & 0.4170 \\ \cline{2-4}
+\rule{0pt}{2.5ex} & {\it baseline-rm} & 0.3298 ($\lambda=0.2$) & 0.4852 ($\lambda=0.3$) \\ \cline{2-4}
+\rule{0pt}{2.5ex} & {\it baseline-rm-cv} & 0.3291 & 0.4858 \\ \cline{2-4}
+\rule{0pt}{2.5ex} & {\it exp-ql} & ?? & ?? \\ \hline\hline
+\rule{0pt}{2.5ex} \multirow{3}{*}{Robust} & {\it baseline-ql} & 0.2185 & 0.3825 \\ \cline{2-4}
+\rule{0pt}{2.5ex} & {\it baseline-rm} & 0.2349 ($\lambda=0.2$) & 0.3893 ($\lambda=0.6$) \\ \cline{2-4}
+\rule{0pt}{2.5ex} & {\it baseline-rm-cv} & 0.2663 & 0.3940 \\ \cline{2-4}
+\rule{0pt}{2.5ex} & {\it exp-ql} & 0.2420$^{\Downarrow}$ & 0.4066$^{\uparrow}$ \\ \hline\hline
+\rule{0pt}{2.5ex} \multirow{3}{*}{wt10g} & {\it baseline-ql} & 0.1687 & 0.2753 \\ \cline{2-4}
+\rule{0pt}{2.5ex} & {\it baseline-rm} & 0.1735 ($\lambda=0.7,0.8$) & 0.2738 ($\lambda=1.0$)\\ \cline{2-4}
+\rule{0pt}{2.5ex} & {\it baseline-rm-cv} & 0.1683 & 0.2633 \\ \cline{2-4}
+\rule{0pt}{2.5ex} & {\it exp-ql} & 0.1827 & 0.3153$^{\uparrow\Uparrow}$ \\ \hline\hline
+\rule{0pt}{2.5ex} \multirow{3}{*}{blogs06} & {\it baseline-ql} & 0.3064 & 0.2415 \\ \cline{2-4}
+\rule{0pt}{2.5ex} & {\it baseline-rm} & 0.3103 ($\lambda=0.7$) & 0.2431 ($\lambda=1.0$)\\ \cline{2-4}
+\rule{0pt}{2.5ex} & {\it baseline-rm-cv} & 0.3064 & 0.2330 \\ \cline{2-4}
+\rule{0pt}{2.5ex} & {\it exp-ql} & 0.2988 & 0.2365 \\ \hline\hline
+\rule{0pt}{2.5ex} \multirow{3}{*}{clueweb09} & {\it baseline-ql} & 0.1117 & 0.1944 \\ \cline{2-4}
+\rule{0pt}{2.5ex} & {\it baseline-rm} & 0.1163 ($\lambda=0.2$) & 0.2034 ($\lambda=0.7$) \\ \cline{2-4}
+\rule{0pt}{2.5ex} & {\it baseline-rm-cv} & ?? & ?? \\ \cline{2-4}
+\rule{0pt}{2.5ex} & {\it exp-ql} & 0.1183$^{\uparrow}$ & 0.2100 \\ \hline
 \end{tabular}
-\caption{The top-scoring runs and baselines by MAP. $\uparrow$ indicates statistically significant improvements over baselines \textbf{but I haven't done significance testing yet}.}
+\caption{The top-scoring runs and baselines by MAP. $\uparrow$ indicates statistically significant improvements over the oracle RM3 baseline, \textit{baseline-rm}, while $\Uparrow$ and $\Downarrow$ indicate statistically significant improvement and decrease compared to the cross validated RM3 baseline, \textit{baseline-rm-cv}. Significance at $p < 0.05$.}
 \label{table.performance}
 \end{table}
 
-Retrieval performance of the baselines and top-scoring runs are shown in Table \ref{table.performance}. Mean average precision (MAP) scores marked with $\uparrow$ are greater than the baseline run with statistical significance at $p < 0.05$ using a paired one-tailed t-test. Note that baselines correspond to $\sum_{j=1}^n \lambda_{{\mathcal{E}_D}_j} = 0.0$. 
+Retrieval performance of the baselines and top-scoring runs are shown in Table \ref{table.performance}. Mean average precision (MAP) and normalized discounted cumulative gain at 20 (nDCG@20) scores marked with $\uparrow$ are greater than the optimal RM3 run with statistical significance at $p < 0.05$ using a paired one-tailed t-test. We also run a more realistic RM3 run using 10-fold cross validation to set the mixing parameter $\lambda$. Scores marked with $\Uparrow and \Downarrow$ signal statistically significant increases and decreases in performance relative to this cross validated RM3 run. Note that baselines correspond to $\sum_{j=1}^n \lambda_{{\mathcal{E}_D}_j} = 0.0$. 
 
 \textbf{Relating to old work, probably suggestive of this work, though:} As Figure \ref{figure.sweeps-ql} shows, performance of \textit{kb} runs is not very sensitive to $n$, the number of linked entities: AP shows improvement over the baseline at $0.1 \leq \lambda \leq 0.9$ and robust at $0.1 \leq \lambda \leq 0.7$ for all values of $n$. Optimal performance for both collections occurs at relatively small numbers of entities as shown in Table \ref{table.performance}; this is a convenient result since it allows for more efficient document expansion.
 
