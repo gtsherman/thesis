@@ -51,6 +51,8 @@ Most similar to our approach is that of Efron, Organisciak and Fenlon \cite{Efro
 \subsection{Underlying Retrieval Model}\label{section.expanding.model}
 Throughout this paper we rely on the language modeling retrieval framework \cite{Lafferty2001}, though this is not strictly necessary and imposes no particular mathematical constraints on our approach. More specifically, we employ the query likelihood (QL) and relevance modeling ranking methods. 
 
+\subsubsection{Query Likelihood}
+
 Given a query $Q$ and a document $D$, we rank documents on $P(Q | \theta_D)$, where $\theta_D$ is the language model (typically a multinomial over the vocabulary $V$) that generated the text of document $D$.  Assuming independence among terms and a uniform distribution over documents, each document is scored by
 
 \begin{flalign}\label{equation.ql}
@@ -67,6 +69,24 @@ in a given collection have a Dirichlet prior distribution:
 \noindent where $\hat{P}(w | C)$ is the maximum likelihood estimate of the probability of seeing word $w$ in a ``background" collection $C$ (typically $C$ is the corpus from which $D$ is drawn), and $\mu \geq 0$ is the smoothing hyper-parameter. 
 
 \subsubsection{Relevance Modeling}
+
+Relevance modeling is a form of pseudo-relevance feedback that uses top ranked documents to estimate a language model representing documents relevant to a query \cite{Lavrenko2001}. This language model, known as a relevance model, acts as a form of query expansion and is generally used with the KL divergence retrieval model \cite{Zhai2006} to score documents.
+
+A relevance model takes the form of
+
+\begin{flalign}\label{equation.rm1}
+	P(w|R) = \sum_{D \in C} P(D) P(w|D) P(Q|D)
+\end{flalign}
+
+\noindent where $P(Q|D)$ is calculated as in Equation \ref{equation.ql} and essentially weights word $w$ in document $D$ by the query likelihood of the document. Though theoretically calculated over all words and documents, relevance models are more efficient and robust when calculated over only the top terms in only the top ranked documents. These parameters are referred to as $fbTerms$ and $fbDocs$ respectively in Table \ref{table.parameters}.
+
+Because relevance models are prone to query drift, research has shown that linearly interpolating a relevance model with the original query model to improve performance:
+
+\begin{flalign}\label{equation.rm3}
+	P(w|Q') = (1-\alpha) P(w|R) + \alpha P(w|Q).
+\end{flalign}
+
+\noindent $\alpha$ is a mixing parameter controlling the influence of the original query. This form of relevance model is known as ``RM3'' and is the baseline used throughout this paper.
 
 \subsection{Expanding with Document Pseudo-Queries}\label{section.expanding.queries}
 
