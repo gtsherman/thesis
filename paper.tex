@@ -190,23 +190,23 @@ To set the two $\lambda_{\mathcal{E}_D}$ values, we use 5-fold cross validation.
 \begin{tabular}{|c|l|c|c|} \hline
 {\bf Collection} & {\bf Run} & {\bf MAP} & {\bf nDCG@20} \\ \hline\hline
 \rule{0pt}{2.5ex} \multirow{3}{*}{AP} & {\it baseline-ql} & 0.2337 & 0.4170 \\ \cline{2-4}
-\rule{0pt}{2.5ex} & {\it baseline-rm} & 0.3298 ($\lambda=0.2$) & 0.4852 ($\lambda=0.3$) \\ \cline{2-4}
+\rule{0pt}{2.5ex} & {\it baseline-rm} & 0.3298 ($\alpha=0.2$) & 0.4852 ($\alpha=0.3$) \\ \cline{2-4}
 \rule{0pt}{2.5ex} & {\it baseline-rm-cv} & 0.3291 & 0.4858 \\ \cline{2-4}
 \rule{0pt}{2.5ex} & {\it exp-ql} & ?? & ?? \\ \hline\hline
 \rule{0pt}{2.5ex} \multirow{3}{*}{Robust} & {\it baseline-ql} & 0.2185 & 0.3825 \\ \cline{2-4}
-\rule{0pt}{2.5ex} & {\it baseline-rm} & 0.2349 ($\lambda=0.2$) & 0.3893 ($\lambda=0.6$) \\ \cline{2-4}
+\rule{0pt}{2.5ex} & {\it baseline-rm} & 0.2349 ($\alpha=0.2$) & 0.3893 ($\alpha=0.6$) \\ \cline{2-4}
 \rule{0pt}{2.5ex} & {\it baseline-rm-cv} & 0.2663 & 0.3940 \\ \cline{2-4}
 \rule{0pt}{2.5ex} & {\it exp-ql} & 0.2420$^{\Downarrow}$ & 0.4066$^{\uparrow}$ \\ \hline\hline
 \rule{0pt}{2.5ex} \multirow{3}{*}{wt10g} & {\it baseline-ql} & 0.1687 & 0.2753 \\ \cline{2-4}
-\rule{0pt}{2.5ex} & {\it baseline-rm} & 0.1735 ($\lambda=0.7,0.8$) & 0.2738 ($\lambda=1.0$)\\ \cline{2-4}
+\rule{0pt}{2.5ex} & {\it baseline-rm} & 0.1735 ($\alpha=0.7,0.8$) & 0.2738 ($\alpha=1.0$)\\ \cline{2-4}
 \rule{0pt}{2.5ex} & {\it baseline-rm-cv} & 0.1683 & 0.2633 \\ \cline{2-4}
 \rule{0pt}{2.5ex} & {\it exp-ql} & 0.1827 & 0.3153$^{\uparrow\Uparrow}$ \\ \hline\hline
 \rule{0pt}{2.5ex} \multirow{3}{*}{blogs06} & {\it baseline-ql} & 0.3064 & 0.2415 \\ \cline{2-4}
-\rule{0pt}{2.5ex} & {\it baseline-rm} & 0.3103 ($\lambda=0.7$) & 0.2431 ($\lambda=1.0$)\\ \cline{2-4}
+\rule{0pt}{2.5ex} & {\it baseline-rm} & 0.3103 ($\alpha=0.7$) & 0.2431 ($\alpha=1.0$)\\ \cline{2-4}
 \rule{0pt}{2.5ex} & {\it baseline-rm-cv} & 0.3064 & 0.2330 \\ \cline{2-4}
 \rule{0pt}{2.5ex} & {\it exp-ql} & 0.2988 & 0.2365 \\ \hline\hline
 \rule{0pt}{2.5ex} \multirow{3}{*}{clueweb09} & {\it baseline-ql} & 0.1117 & 0.1944 \\ \cline{2-4}
-\rule{0pt}{2.5ex} & {\it baseline-rm} & 0.1163 ($\lambda=0.2$) & 0.2034 ($\lambda=0.7$) \\ \cline{2-4}
+\rule{0pt}{2.5ex} & {\it baseline-rm} & 0.1163 ($\alpha=0.2$) & 0.2034 ($\alpha=0.7$) \\ \cline{2-4}
 \rule{0pt}{2.5ex} & {\it baseline-rm-cv} & ?? & ?? \\ \cline{2-4}
 \rule{0pt}{2.5ex} & {\it exp-ql} & 0.1183$^{\uparrow}$ & 0.2100 \\ \hline
 \end{tabular}
@@ -214,7 +214,7 @@ To set the two $\lambda_{\mathcal{E}_D}$ values, we use 5-fold cross validation.
 \label{table.performance}
 \end{table}
 
-Retrieval performance of the baselines and top-scoring runs are shown in Table \ref{table.performance}. Mean average precision (MAP) and normalized discounted cumulative gain at 20 (nDCG@20) scores marked with $\uparrow$ are greater than the optimal RM3 run with statistical significance at $p < 0.05$ using a paired one-tailed t-test. We also run a more realistic RM3 run using 10-fold cross validation to set the mixing parameter $\lambda$. Scores marked with $\Uparrow and \Downarrow$ signal statistically significant increases and decreases in performance relative to this cross validated RM3 run. Note that baselines correspond to $\sum_{j=1}^n \lambda_{{\mathcal{E}_D}_j} = 0.0$. 
+Retrieval performance of the baselines and top-scoring runs are shown in Table \ref{table.performance}. Mean average precision (MAP) and normalized discounted cumulative gain at 20 (nDCG@20) scores marked with $\uparrow$ are greater than the optimal RM3 run with statistical significance at $p < 0.05$ using a paired one-tailed t-test. We also run a more realistic RM3 run using 10-fold cross validation to set the mixing parameter $\alpha$. Scores marked with $\Uparrow and \Downarrow$ signal statistically significant increases and decreases in performance relative to this cross validated RM3 run. Note that baselines correspond to $\sum_{j=1}^n \lambda_{{\mathcal{E}_D}_j} = 0.0$. 
 
 \textbf{Relating to old work, probably suggestive of this work, though:} As Figure \ref{figure.sweeps-ql} shows, performance of \textit{kb} runs is not very sensitive to $n$, the number of linked entities: AP shows improvement over the baseline at $0.1 \leq \lambda \leq 0.9$ and robust at $0.1 \leq \lambda \leq 0.7$ for all values of $n$. Optimal performance for both collections occurs at relatively small numbers of entities as shown in Table \ref{table.performance}; this is a convenient result since it allows for more efficient document expansion.
 
