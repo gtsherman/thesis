@@ -32,6 +32,16 @@
 
 \section{Introduction}\label{section.intro}
 
+When using language models (LMs) to perform document retrieval, we treat the query and document texts as observations from unseen (and unobservable) probabilistic processes. In the query likelihood (QL) retrieval model, we rank each document by the likelihood that its language model would ``generate'' the query text. However, if the query is a sample from an underlying stochastic process, it is generally too sparse to fully represent an informtion need.
+
+Relevance modeling is an extremely influential pseudo-relevance feedback technique that helps to allievate the problem of vocabulary mismatch. Instead of assuming that queries are observations sampled from \textit{document} models, we assume that both queries and documents are observations sampled from a \textit{relevance} model (RM) \cite{Lavrenko2001}. We can use this idea to expand the query representation into an estimate of the relevance model as explained in Section \ref{section.expanding.model.rm} and rank documents by the similarity of their estimated language model to the estimated RM.
+
+As a form of pseudo-relevance feedback, part of the relevance modeling process involves assuming that top-ranked documents are relevant to the query. Although this assumption is generally untrue, it is true of enough top-ranked documents that the estimated RM will be of good quality. That is, initially retrieved documents provide a good estimate of the underlying relevance model \textit{in their aggregate}; taken individually, documents are not assumed to accurately represent the underlying RM.
+
+We suggest that, given that a top-ranked document is, like a query, considered a limited observation of terms from a relevance model, documents may be expanded to better reflect their underlying relevance model. In this paper, we propose a method of document expansion that closely mirrors the process of relevance modeling. This document expansion process serves many of the same roles as traditional relevance modeling without excluding the use of RMs; indeed, our document expansion process is complementary to query expansion.
+
+\textbf{Talk about external collections and combining evidence.}
+
 \section{Related Work}\label{section.related}
 
 \subsection{Document Expansion in IR}\label{section.related.ir}
@@ -51,7 +61,7 @@ Most similar to our approach is that of Efron, Organisciak and Fenlon \cite{Efro
 \subsection{Underlying Retrieval Model}\label{section.expanding.model}
 Throughout this paper we rely on the language modeling retrieval framework \cite{Lafferty2001}, though this is not strictly necessary and imposes no particular mathematical constraints on our approach. More specifically, we employ the query likelihood (QL) and relevance modeling ranking methods. 
 
-\subsubsection{Query Likelihood}
+\subsubsection{Query Likelihood}\label{section.expanding.model.ql}
 
 Given a query $Q$ and a document $D$, we rank documents on $P(Q | \theta_D)$, where $\theta_D$ is the language model (typically a multinomial over the vocabulary $V$) that generated the text of document $D$.  Assuming independence among terms and a uniform distribution over documents, each document is scored by
 
@@ -68,7 +78,7 @@ in a given collection have a Dirichlet prior distribution:
 
 \noindent where $\hat{P}(w | C)$ is the maximum likelihood estimate of the probability of seeing word $w$ in a ``background" collection $C$ (typically $C$ is the corpus from which $D$ is drawn), and $\mu \geq 0$ is the smoothing hyper-parameter. 
 
-\subsubsection{Relevance Modeling}
+\subsubsection{Relevance Modeling}\label{section.expanding.model.rm}
 
 Relevance modeling is a form of pseudo-relevance feedback that uses top ranked documents to estimate a language model representing documents relevant to a query \cite{Lavrenko2001}. This language model, known as a relevance model, acts as a form of query expansion and is generally used with the KL divergence retrieval model \cite{Zhai2006} to score documents.
 
@@ -114,7 +124,7 @@ We would now like to incorporate our expansion documents into a retrieval model 
 
 \noindent Like $P(q_i|D)$, we estimate the probability of $q_i$ given expansion document $E$, $P(q_i|E)$, as a Dirichlet-smoothed query likelihood. By virtue of our expansion document scoring and normalization, we also have $P(E|D)$.
 
-\subsection{Combining Evidence}\label{section.combining.evidence}
+\subsection{Combining Evidence}\label{section.combining}
 
 We investigate the use of multiple collections for document expansion. We expect a more diverse set of expansion documents to result in more robust (less biased) language models at the conclusion of the expansion process.
 
