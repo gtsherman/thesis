@@ -140,20 +140,6 @@ To expand a document $D$ given a set of collections $C = \{C_1, C_2, ..., C_n\}$
 
 \noindent where $0 \leq \sum_{j=1}^n \lambda_{{\mathcal{E}_D}_j} \leq 1$. As before, each value of $\lambda_{{\mathcal{E}_D}_j}$ reflects our confidence in that set of expansion documents accurately representing the query language model.
 
-\begin{figure*}[!htb]
-\centering
-\begin{subfigure}{.5\columnwidth}
-\centering
-\includegraphics[width=\columnwidth]{figures/sweep-entities-AP.pdf}
-\end{subfigure}%
-\begin{subfigure}{.5\columnwidth}
-\centering
-\includegraphics[width=\columnwidth]{figures/sweep-entities-robust.pdf}
-\end{subfigure}
-\caption{\textbf{Relating to old work, probably suggestive of this work, though:} Sweeps over values of $\lambda$ for AP (a) and robust (b) \textit{exp} runs. $\lambda=0.0$ is equivalent to the baseline run.}
-\label{figure.sweeps-ql}
-\end{figure*}
-
 \section{Evaluation}\label{section.evaluation}
 
 \subsection{Data}\label{section.evaluation.collections}
@@ -177,10 +163,11 @@ These datasets were chosen because they provide a good range of collection types
 
 %In some of the following runs, we make use of the RM3 variant of relevance modeling \cite{Lavrenko2001} which interpolates the original query $Q$ with the relevance model using a mixing parameter $\alpha$. RM3 provides a stronger baseline than standard query likelihood.
 
-We produce three runs per collection:
+We produce four runs per collection:
 \begin{itemize}
 	\item \textit{baseline-ql}, a baseline query likelihood run
-	\item \textit{baseline-rm3}, a baseline RM3 run
+	\item \textit{baseline-rm}, a baseline RM3 run with optimal $\alpha$
+	\item \textit{baseline-rm-cv}, a baseline RM3 run with 10-fold cross validation
 	\item \textit{exp-ql}, incorporating expansion documents using Eq. \ref{eq.ql-and-expansion}
 %	\item \textit{stanbol-ql}, which uses Stanbol entity annotations in place of our document-level links.
 \end{itemize}
@@ -209,13 +196,11 @@ The various parameters required for our approach, along with their meanings and 
 
 %We sweep across values of $\lambda_{\mathcal{E}_D}$ and $n$ at intervals of 0.1 and 10 respectively to investigate the sensitivity of our model to these parameters. The results of these sweeps are shown in Figure \ref{figure.sweeps-ql} and discussed further in Section \ref{section.results}.
 
-For this work, we set $k$ heuristically. In principle, this parameter need not be limited beyond the length of the document; however, this would increase computation time significantly, so we have opted to set it to the specified value.
-
-\textbf{I have also set $n$ heuristically but intend to do a sweep over values of $n$ to ensure it is not a sensitive parameter. Prior work suggests it is not.}
+For this work, we set $k$ heuristically. In principle, this parameter need not be limited beyond the length of the document; however, this would increase computation time significantly, so we have opted to set it to the specified value. The parameter $n$ is similarly set heuristically to 10 expansion documents; see Section \ref{section.n-sensitivity} for a discussion of the performance sensitivity to the setting of $n$.
 
 %To set the two $\lambda_{\mathcal{E}_D}$ values, we use 5-fold cross validation. This entails splitting each set of topics into five random groups (folds) and using four of them in concert with relevance judgments to determine optimal parameter settings, which we test using the fifth. By using each of the five folds as the test fold once, we produce results that fully cover the topic set; we combine these results in order to perform batch evaluation. Additionally, since the quality of the results depends in part on the initial random fold creation, we run the cross-validation repeatedly 75 times and report the average metric across these repeated runs. This helps ensure that strong performance is not the result of a beneficial but random division of documents.
 
-To set the two $\lambda_{\mathcal{E}_D}$ values, we use 5-fold cross validation. This entails splitting each set of topics into five random groups (folds) and using four of them in concert with relevance judgments to determine optimal parameter settings, which we test using the fifth. By using each of the five folds as the test fold once, we produce results that fully cover the topic set; we combine these results in order to perform batch evaluation. 
+To set the two $\lambda_{\mathcal{E}_D}$ values, we use 10-fold cross validation. This entails splitting each set of topics into ten random groups (folds) and using nine of them in concert with relevance judgments to determine optimal parameter settings, which we test using the tenth. By using each of the ten folds as the test fold once, we produce results that fully cover the topic set; we combine these results in order to perform batch evaluation. 
 
 \section{Results}\label{section.results}
 
@@ -226,31 +211,40 @@ To set the two $\lambda_{\mathcal{E}_D}$ values, we use 5-fold cross validation.
 \rule{0pt}{2.5ex} \multirow{3}{*}{AP} & {\it baseline-ql} & 0.2337 & 0.4170 \\ \cline{2-4}
 \rule{0pt}{2.5ex} & {\it baseline-rm} & 0.3298 ($\alpha=0.2$) & 0.4852 ($\alpha=0.3$) \\ \cline{2-4}
 \rule{0pt}{2.5ex} & {\it baseline-rm-cv} & 0.3291 & 0.4858 \\ \cline{2-4}
-\rule{0pt}{2.5ex} & {\it exp-ql} & ?? & ?? \\ \hline\hline
+\rule{0pt}{2.5ex} & {\it exp-ql} & 0.2799 & 0.4687 \\ \hline\hline
 \rule{0pt}{2.5ex} \multirow{3}{*}{Robust} & {\it baseline-ql} & 0.2185 & 0.3825 \\ \cline{2-4}
 \rule{0pt}{2.5ex} & {\it baseline-rm} & 0.2349 ($\alpha=0.2$) & 0.3893 ($\alpha=0.6$) \\ \cline{2-4}
 \rule{0pt}{2.5ex} & {\it baseline-rm-cv} & 0.2663 & 0.3940 \\ \cline{2-4}
-\rule{0pt}{2.5ex} & {\it exp-ql} & 0.2420$^{\Downarrow}$ & 0.4066$^{\uparrow}$ \\ \hline\hline
+\rule{0pt}{2.5ex} & {\it exp-ql} & 0.2420 & 0.4066$^{\uparrow}$ \\ \hline\hline
 \rule{0pt}{2.5ex} \multirow{3}{*}{wt10g} & {\it baseline-ql} & 0.1687 & 0.2753 \\ \cline{2-4}
 \rule{0pt}{2.5ex} & {\it baseline-rm} & 0.1735 ($\alpha=0.7,0.8$) & 0.2738 ($\alpha=1.0$)\\ \cline{2-4}
 \rule{0pt}{2.5ex} & {\it baseline-rm-cv} & 0.1683 & 0.2633 \\ \cline{2-4}
-\rule{0pt}{2.5ex} & {\it exp-ql} & 0.1827 & 0.3153$^{\uparrow\Uparrow}$ \\ \hline\hline
+\rule{0pt}{2.5ex} & {\it exp-ql} & 0.1836 & 0.3181$^{\uparrow\Uparrow}$ \\ \hline\hline
 \rule{0pt}{2.5ex} \multirow{3}{*}{blogs06} & {\it baseline-ql} & 0.3064 & 0.2415 \\ \cline{2-4}
 \rule{0pt}{2.5ex} & {\it baseline-rm} & 0.3103 ($\alpha=0.7$) & 0.2431 ($\alpha=1.0$)\\ \cline{2-4}
 \rule{0pt}{2.5ex} & {\it baseline-rm-cv} & 0.3064 & 0.2330 \\ \cline{2-4}
-\rule{0pt}{2.5ex} & {\it exp-ql} & 0.2988 & 0.2365 \\ \hline\hline
+\rule{0pt}{2.5ex} & {\it exp-ql} & 0.2990 & 0.2343 \\ \hline\hline
 \rule{0pt}{2.5ex} \multirow{3}{*}{clueweb09} & {\it baseline-ql} & 0.1117 & 0.1944 \\ \cline{2-4}
 \rule{0pt}{2.5ex} & {\it baseline-rm} & 0.1163 ($\alpha=0.2$) & 0.2034 ($\alpha=0.7$) \\ \cline{2-4}
 \rule{0pt}{2.5ex} & {\it baseline-rm-cv} & ?? & ?? \\ \cline{2-4}
 \rule{0pt}{2.5ex} & {\it exp-ql} & 0.1183$^{\uparrow}$ & 0.2100 \\ \hline
 \end{tabular}
-\caption{The top-scoring runs and baselines by MAP. $\uparrow$ indicates statistically significant improvements over the oracle RM3 baseline, \textit{baseline-rm}, while $\Uparrow$ and $\Downarrow$ indicate statistically significant improvement and decrease compared to the cross validated RM3 baseline, \textit{baseline-rm-cv}. Significance at $p < 0.05$.}
+\caption{The top-scoring runs and baselines by MAP. $\uparrow$ indicates statistically significant improvements over the oracle RM3 baseline, \textit{baseline-rm}, while $\Uparrow$ indicates statistically significant improvement and decrease compared to the cross validated RM3 baseline, \textit{baseline-rm-cv}. Significance at $p < 0.05$.}
 \label{table.performance}
 \end{table}
 
-Retrieval performance of the baselines and top-scoring runs are shown in Table \ref{table.performance}. Mean average precision (MAP) and normalized discounted cumulative gain at 20 (nDCG@20) scores marked with $\uparrow$ are greater than the optimal RM3 run with statistical significance at $p < 0.05$ using a paired one-tailed t-test. We also run a more realistic RM3 run using 10-fold cross validation to set the mixing parameter $\alpha$. Scores marked with $\Uparrow and \Downarrow$ signal statistically significant increases and decreases in performance relative to this cross validated RM3 run. Note that baselines correspond to $\sum_{j=1}^n \lambda_{{\mathcal{E}_D}_j} = 0.0$. 
+Retrieval performance of the baselines and top-scoring runs are shown in Table \ref{table.performance}. Mean average precision (MAP) and normalized discounted cumulative gain at 20 (nDCG@20) scores marked with $\uparrow$ are greater than the optimal RM3 run with statistical significance at $p < 0.05$ using a paired one-tailed t-test. We also run a more realistic RM3 run using 10-fold cross validation to set the mixing parameter $\alpha$. Scores marked with $\Uparrow$ signal statistically significant increases in performance relative to this cross validated RM3 run. Note that baselines correspond to $\sum_{j=1}^n \lambda_{{\mathcal{E}_D}_j} = 0.0$. 
 
-\textbf{Relating to old work, probably suggestive of this work, though:} As Figure \ref{figure.sweeps-ql} shows, performance of \textit{kb} runs is not very sensitive to $n$, the number of linked entities: AP shows improvement over the baseline at $0.1 \leq \lambda \leq 0.9$ and robust at $0.1 \leq \lambda \leq 0.7$ for all values of $n$. Optimal performance for both collections occurs at relatively small numbers of entities as shown in Table \ref{table.performance}; this is a convenient result since it allows for more efficient document expansion.
+\subsection{Sensitivity to $n$}\label{section.n-sensitivity}
+
+\begin{figure*}[!htb]
+\centering
+\includegraphics[width=\columnwidth]{figures/n-sweep.pdf}
+\caption{Sweeps over values of $n$, the number of entities, for each \textit{exp-ql} run.}
+\label{figure.n-sweeps}
+\end{figure*}
+
+Similar to $k$, the value of $n$ may theoretically equal the number of expansion documents available, i.e. $|C_E|$; in practice, of course, this is infeasible, and $n$ will be substantially smaller. We must be careful in setting the value of $n$ for computational efficiency reasons: if $n$ is set high, we must process more documents. Figure \ref{figure.n-sweeps} shows sweeps over several values of $n$ for each target collection using our established 10-fold cross validation procedure with identical folds. Happily, the performance of our approach is not sensitive to the setting of $n$, and lower values generally perform as well or better than higher values. We therefore choose the value of 10 as an apparently safe value; this is a convenient result since it allows for more efficient document expansion.
 
 \subsection{Is Expansion Worthwhile?}\label{section.results.expansion}
 
