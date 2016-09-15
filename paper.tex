@@ -50,15 +50,13 @@ To help alleviate this, we introduce a general method of incorporating external 
 
 \subsection{Document Expansion in IR}\label{section.related.ir}
 
-Prior work
+Document expansion has been well studied in information retrieval literature, e.g. \cite{Liu2004, Tao2006, Hubert2009, Singhal1999}. For example, Liu \& Croft propose a method of retrieval that uses document clusters to smooth document language models \cite{Liu2004}. Wei \& Croft propose a similar style of document expansion by smoothing term probabilities in documents with those in latent Dirichlet allocation topics \cite{Wei2006}. Even more pertinent to our work is that of Tao et al., who propose a similar approach to that of Liu \& Croft, but make each document the center of its own cluster, which helps to ensure that the expansion documents are as closely as related to the target document as possible \cite{Tao2006}.
 
-Our idea is related to Wei and Croft's LDA-based document model, which smooths the document language model with latent Dirichlet allocation probabilities \cite{Wei2006}. Liu and Croft's \textit{CBDM} model performs a similar type of document expansion by interpolating the probability of a query term in a document cluster with its probability in the document \cite{Liu2004}.
-
-Most similar to our approach is that of Efron, Organisciak and Fenlon \cite{Efron2012}.
+Most similar to our approach is that of Efron, Organisciak \& Fenlon \cite{Efron2012}, who issue very short microblog documents as pseudo-queries and use the retrieved documents for expansion. Their approach relates closely to that of relevance modeling \cite{Lavrenko2001}. We take this work as the starting point for our own and explore its application and adaptation to different scenarios. Firstly, Efron, Organisciak \& Fenlon are concerned with microblog retrieval, in which documents are extremely short---perhaps as small as a keyword query. In contrast, we are interested in performing document expansion with more typical full-length documents, such as those found in news and web corpora. Secondly, while their work used only the target document collection, we propose an expansion of their method that allows for multiple expansion corpora. Finally, we investigate pairing document expansion with query expansion.
 
 \subsection{Incorporating External Collections}\label{section.external.collections}
 
-\cite{Diaz2006} introduces the use of external collections to relevance modeling.
+The incorporation of external collections into document retrieval is a similarly common trope in IR literature. One prior study with relevance to ours is that of Diaz \& Metzler, whose mixture of relevance models bears a resemblance to our Eq. \ref{eq.ql-and-expansion-mult} \cite{Diaz2006}; of course, our approach is qualitatively different since Diaz \& Metzler were interested in query expansion while we apply the technique to document expansion.
 
 \section{Document Expansion Procedure}\label{section.expanding}
 
