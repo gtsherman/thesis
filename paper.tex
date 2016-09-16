@@ -227,7 +227,7 @@ To set the two $\lambda_{\mathcal{E}_D}$ values, we use 10-fold cross validation
 \rule{0pt}{2.5ex} & {\it baseline-rm-cv} & ?? & ?? \\ \cline{2-4}
 \rule{0pt}{2.5ex} & {\it exp-ql} & 0.1183$^{\uparrow}$ & 0.2100 \\ \hline
 \end{tabular}
-\caption{The top-scoring runs and baselines by MAP. $\uparrow$ indicates statistically significant improvements over the oracle RM3 baseline, \textit{baseline-rm}, while $\Uparrow$ indicates statistically significant improvement and decrease compared to the cross validated RM3 baseline, \textit{baseline-rm-cv}. Significance at $p < 0.05$.}
+\caption{The top-scoring runs and baselines by MAP. $\uparrow$ indicates statistically significant improvements over the oracle RM3 baseline, \textit{baseline-rm}, while $\Uparrow$ indicates statistically significant improvement compared to the cross validated RM3 baseline, \textit{baseline-rm-cv}. Significance at $p < 0.05$.}
 \label{table.performance}
 \end{table}
 
@@ -249,17 +249,34 @@ Similar to $k$, the value of $n$ may theoretically equal the number of expansion
 \begin{table}[htbp]
 \centering
 \begin{tabular}{|l|c|c|c|c|} \hline
-& \multicolumn{2}{c}{Self} & \multicolumn{2}{|c|}{Wikipedia} \\ \hline
-{\bf Collection} & {\bf $\lambda$} & {\bf MAP} & {\bf $\lambda$} & {\bf MAP} \\ \hline
-AP & ? & ? & 0.2 & 0.2662 \\ \hline
-Robust & ? & ? & 0.2 & 0.2354 \\ \hline
-wt10g & ? & ? & ? & ? \\ \hline
-blogs06 & ? & ? & ? & ? \\ \hline
-clueweb09 & ? & ? & ? & ? \\ \hline
+Self & Wikipedia \\ \hline
+{\bf Collection} & {\bf MAP} & {\bf MAP} \\ \hline
+AP & 0.1898$^{\downarrow}$ & 0.1880$^{\downarrow}$ \\ \hline
+Robust & 0.1922$^{\downarrow}$ & 0.1915$^{\downarrow}$ \\ \hline
+wt10g & 0.1383$^{\downarrow}$ & 0.1396$^{\downarrow}$ \\ \hline
+blogs06 & 0.1244$^{\downarrow}$ & 0.1261$^{\downarrow}$ \\ \hline
+clueweb09 & ? & ? \\ \hline
 \end{tabular}
-\caption{The top-scoring runs by MAP using only one collection of expansion documents. ``Self'' indicates expansion using the document's original collection while ``Wikipedia'' indicates expansion using Wikipedia.}
-\label{table.performance.single}
+\caption{The top-scoring runs by MAP using only one collection of expansion documents. ``Self'' indicates expansion using the document's original collection while ``Wikipedia'' indicates expansion using Wikipedia. $^{\downarrow}$ indicates statistically significant decreases compared to the corresponding run using two collections.}
+\label{table.performance.single.map}
 \end{table}
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{|l|c|c|c|c|} \hline
+Self & Wikipedia \\ \hline
+{\bf Collection} & {\bf nDCG@20} & {\bf nDCG@20} \\ \hline
+AP & 0.4236$^{\downarrow}$ & 0.4203$^{\downarrow}$ \\ \hline
+Robust & 0.3832$^{\downarrow}$ & 0.3821$^{\downarrow}$ \\ \hline
+wt10g & 0.2748$^{\downarrow}$ & 0.2753 \\ \hline
+blogs06 & 0.2418$^{\downarrow}$ & 0.2418$^{\downarrow}$ \\ \hline
+clueweb09 & ? & ? \\ \hline
+\end{tabular}
+\caption{The top-scoring runs by nDCG@20 using only one collection of expansion documents. ``Self'' indicates expansion using the document's original collection while ``Wikipedia'' indicates expansion using Wikipedia. $^{\downarrow}$ indicates statistically significant decreases compared to the corresponding run using two collections.}
+\label{table.performance.single.ndcg}
+\end{table}
+
+To justify the use of multiple external collections, we expand documents using each of the expansion collections individually. These results are shown in Tables \ref{table.performance.single.map} and \ref{table.performance.single.ndcg}.
 
 \section{Conclusions}\label{section.conclusions}
 
