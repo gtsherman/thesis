@@ -138,6 +138,16 @@ To expand a document $D$ given a set of collections $C = \{C_1, C_2, ..., C_n\}$
 
 \noindent where $0 \leq \sum_{j=1}^n \lambda_{{\mathcal{E}_D}_j} \leq 1$. As before, each value of $\lambda_{{\mathcal{E}_D}_j}$ reflects our confidence in that set of expansion documents accurately representing the query language model.
 
+\subsection{Relevance Modeling with Expanded Documents}
+
+While our approach serves much the same role as relevance modeling, the two techniques may in fact be used simultaneously. Practically, the relevance model may be computed on either the unexpanded or the expanded documents. However, there are two reasons why we would prefer the latter case: 
+\begin{enumerate}
+	\item Given our motivating intuition that document expansion allows for the more accurate estimation of document language models, we would expect that computing an RM using expanded documents should produce a more accurate relevance model.
+	\item Part of the benefit of document expansion is that it may be performed at indexing time, so computing an RM on unexpanded documents ignores information that is already available.
+\end{enumerate}
+
+The addition of relevance modeling to our document expansion approach is therefore extremely straightforward: we simply compute the RM as in Eq. \ref{equation.rm1} substituting the expanded document for the original.
+
 \section{Evaluation}\label{section.evaluation}
 
 \subsection{Data}\label{section.evaluation.collections}
@@ -244,39 +254,38 @@ Retrieval performance of the baselines and top-scoring runs are shown in Table \
 
 Similar to $k$, the value of $n$ may theoretically equal the number of expansion documents available, i.e. $|C_E|$; in practice, of course, this is infeasible, and $n$ will be substantially smaller. We must be careful in setting the value of $n$ for computational efficiency reasons: if $n$ is set high, we must process more documents. Figure \ref{figure.n-sweeps} shows sweeps over several values of $n$ for each target collection using our established 10-fold cross validation procedure with identical folds. Happily, the performance of our approach is not sensitive to the setting of $n$, and lower values generally perform as well or better than higher values. We therefore choose the value of 10 as an apparently safe value; this is a convenient result since it allows for more efficient document expansion.
 
-\subsection{Is Expansion Worthwhile?}\label{section.results.expansion}
-
 \begin{table}[htbp]
 \centering
-\begin{tabular}{|l|c|c|c|c|} \hline
-Self & Wikipedia \\ \hline
-{\bf Collection} & {\bf MAP} & {\bf MAP} \\ \hline
-AP & 0.1898$^{\downarrow}$ & 0.1880$^{\downarrow}$ \\ \hline
-Robust & 0.1922$^{\downarrow}$ & 0.1915$^{\downarrow}$ \\ \hline
-wt10g & 0.1383$^{\downarrow}$ & 0.1396$^{\downarrow}$ \\ \hline
-blogs06 & 0.1244$^{\downarrow}$ & 0.1261$^{\downarrow}$ \\ \hline
-clueweb09 & ? & ? \\ \hline
+\begin{tabular}{|c|l|l|l|l|} \hline
+{\bf Collection} & {\bf Exp. Source} & {\bf Run} & {\bf MAP} & {\bf nDCG@20} \\ \hline\hline
+\rule{0pt}{2.5ex} \multirow{7}{*}{AP} & \cellcolor{gray!50}{\it Baseline} & \cellcolor{gray!50}{\it QL} & \cellcolor{gray!50}0.2337 & \cellcolor{gray!50}0.4170 \\ \cline{2-5}
+\rule{0pt}{2.5ex} & \cellcolor{gray!50}{\it Baseline} & \cellcolor{gray!50}{\it RM3} & \cellcolor{gray!50}0.3310 & \cellcolor{gray!50}0.4855 \\ \cline{2-5}
+\rule{0pt}{2.5ex} & {\it Self} & {\it QL} & 0.2694$^\uparrow$ & 0.4519$^\uparrow$ \\ \cline{2-5}
+\rule{0pt}{2.5ex} & {\it Self} & {\it RM3} & 0.3295$^{\uparrow *}$ & \textbf{0.4876}$^{\uparrow *}$ \\ \cline{2-5}
+\rule{0pt}{2.5ex} & {\it Wiki} & {\it QL} & 0.2644$^\uparrow$ & 0.4582$^\uparrow$ \\ \cline{2-5}
+\rule{0pt}{2.5ex} & {\it Wiki} & {\it  RM3} & 0.3334$^{\uparrow *}$ & 0.4811$^{\uparrow *}$ \\ \cline{2-5}
+\rule{0pt}{2.5ex} & {\it Double} & {\it QL} & 0.2774$^\uparrow$ & 0.4734$^\uparrow$ \\ \cline{2-5}
+\rule{0pt}{2.5ex} & {\it Double} & {\it RM3} & \textbf{0.3342}$^{\uparrow\Uparrow *}$ & 0.4789$^\uparrow$ \\ \hline\hline
+\rule{0pt}{2.5ex} \multirow{7}{*}{Robust} & \cellcolor{gray!50}{\it Baseline} & \cellcolor{gray!50}{\it QL} & \cellcolor{gray!50}0.2183 & \cellcolor{gray!50}0.3867 \\ \cline{2-5}
+\rule{0pt}{2.5ex} & \cellcolor{gray!50}{\it Baseline} & \cellcolor{gray!50}{\it RM3} & \cellcolor{gray!50}0.2639 & \cellcolor{gray!50}0.3908 \\ \cline{2-5}
+\rule{0pt}{2.5ex} & {\it Self} & {\it QL} & 0.2369$^\uparrow$ & 0.4036$^\uparrow$ \\ \cline{2-5}
+\rule{0pt}{2.5ex} & {\it Self} & {\it RM3} & 0.2591$^{\uparrow\Downarrow *}$ & 0.3894$^{*}$ \\ \cline{2-5}
+\rule{0pt}{2.5ex} & {\it Wiki} & {\it QL} & 0.2326$^\uparrow$ & 0.4040$^\uparrow$ \\ \cline{2-5}
+\rule{0pt}{2.5ex} & {\it Wiki} & {\it RM3} & \textbf{0.2674}$^{\uparrow *}$ & 0.4201$^{\uparrow\Uparrow *}$ \\ \cline{2-5}
+\rule{0pt}{2.5ex} & {\it Double} & {\it QL} & 0.2417$^\uparrow$ & 0.4156$^{\uparrow\Uparrow}$ \\ \cline{2-5}
+\rule{0pt}{2.5ex} & {\it Double} & {\it RM3} & 0.2672$^{\uparrow *}$ & \textbf{0.4205}$^{\uparrow\Uparrow}$ \\ \hline\hline
+\rule{0pt}{2.5ex} \multirow{7}{*}{wt10g} & \cellcolor{gray!50}{\it Baseline} & \cellcolor{gray!50}{\it QL} & \cellcolor{gray!50}0.1683 & \cellcolor{gray!50}0.2816 \\ \cline{2-5}
+\rule{0pt}{2.5ex} & \cellcolor{gray!50}{\it Baseline} & \cellcolor{gray!50}{\it RM3} & \cellcolor{gray!50}0.1651 & \cellcolor{gray!50}0.2834 \\ \cline{2-5}
+\rule{0pt}{2.5ex} & {\it Self} & {\it QL} & 0.1660 & 0.2936 \\ \cline{2-5}
+\rule{0pt}{2.5ex} & {\it Self} & {\it RM3} & 0.1694$^\Uparrow$ & 0.2758$^\Downarrow$ \\ \cline{2-5}
+\rule{0pt}{2.5ex} & {\it Wiki} & {\it QL} & 0.1780$^\uparrow$ & 0.3029$^\uparrow$ \\ \cline{2-5}
+\rule{0pt}{2.5ex} & {\it Wiki} & {\it RM3} & \textbf{0.2089}$^{\uparrow\Uparrow *}$ & \textbf{0.3085}$^{\uparrow\Uparrow}$ \\ \cline{2-5}
+\rule{0pt}{2.5ex} & {\it Double} & {\it QL} & 0.1759 & 0.3148$^{\uparrow\Uparrow}$ \\ \cline{2-5}
+\rule{0pt}{2.5ex} & {\it Double} & {\it RM3} & 0.2061$^{\uparrow\Uparrow *}$ & 0.3082$^{\uparrow\Uparrow}$ \\ \hline
 \end{tabular}
-\caption{The top-scoring runs by MAP using only one collection of expansion documents. ``Self'' indicates expansion using the document's original collection while ``Wikipedia'' indicates expansion using Wikipedia. $^{\downarrow}$ indicates statistically significant decreases compared to the corresponding run using two collections.}
-\label{table.performance.single.map}
+\caption{$\uparrow$ is statistical improvement over query likelihood baseline, $\Uparrow$ is statistical improvement over cross-validated RM3 baseline. An asterisk indicates that the run outperforms its non-RM3 variant with statistical significance.}
+\label{table.performance}
 \end{table}
-
-\begin{table}[htbp]
-\centering
-\begin{tabular}{|l|c|c|c|c|} \hline
-Self & Wikipedia \\ \hline
-{\bf Collection} & {\bf nDCG@20} & {\bf nDCG@20} \\ \hline
-AP & 0.4236$^{\downarrow}$ & 0.4203$^{\downarrow}$ \\ \hline
-Robust & 0.3832$^{\downarrow}$ & 0.3821$^{\downarrow}$ \\ \hline
-wt10g & 0.2748$^{\downarrow}$ & 0.2753 \\ \hline
-blogs06 & 0.2418$^{\downarrow}$ & 0.2418$^{\downarrow}$ \\ \hline
-clueweb09 & ? & ? \\ \hline
-\end{tabular}
-\caption{The top-scoring runs by nDCG@20 using only one collection of expansion documents. ``Self'' indicates expansion using the document's original collection while ``Wikipedia'' indicates expansion using Wikipedia. $^{\downarrow}$ indicates statistically significant decreases compared to the corresponding run using two collections.}
-\label{table.performance.single.ndcg}
-\end{table}
-
-To justify the use of multiple external collections, we expand documents using each of the expansion collections individually. These results are shown in Tables \ref{table.performance.single.map} and \ref{table.performance.single.ndcg}.
 
 \section{Conclusions}\label{section.conclusions}
 
